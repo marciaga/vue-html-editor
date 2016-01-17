@@ -30,6 +30,11 @@ module.exports = {
       required: true,
       twoWay: true
     },
+    disableDragAndDrop: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
     language: {
       type: String,
       required: false,
@@ -84,6 +89,20 @@ module.exports = {
       minHeight: this.minHeight,
       maxHeight: this.maxHeight,
       toolbar: this.toolbar,
+      disableDragAndDrop: this.disableDragAndDrop,
+      styleTags: ['h5', 'h6'],
+      onPaste: function (e) {
+        //the normal browser paste function removes all formatting:
+        var clpData = ((e.originalEvent || e).clipboardData || window.clipboardData);
+        if (clpData) {
+            var bufferText = clpData.getData('text/plain');
+            e.preventDefault();
+
+            window.setTimeout(function() {
+                document.execCommand('insertText', false, bufferText);
+            }, 0);
+        }
+      },
       onInit: function() {
         me.control.code(me.model);
       }
